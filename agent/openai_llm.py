@@ -1,23 +1,7 @@
-"""LLM_BACKEND=openai — 실제 OpenAI API 백엔드 (fake_llm/ollama_llm과 동일 인터페이스).
+"""OpenAI Chat Completions 호출과 JSON 응답 파싱.
 
-Wave 10a 구도를 실제 상용 API로: fast(기본 gpt-4o-mini)는 분류·계획·단순 대화,
-quality(기본 gpt-4o)는 분석·최종 답변 작성 전담. ollama_llm.py와 마찬가지로 실모델이라
-결정론은 아니다 — gate(W6)·replan(W7)·validator(W8)가 연출이 아니라 실제 방어선으로
-동작한다. Ollama와 달리 실제 과금이 발생하는 원격 API이므로, 이 백엔드로 실행하면
-OpenAI 계정에 실제 비용이 청구된다(run_openai.sh 실행 전 반드시 인지할 것).
-
-구조화 출력은 OpenAI Chat Completions의 `response_format={"type": "json_object"}`
-(JSON 모드)로 강제한다 — Ollama의 `format=<JSON Schema>`처럼 스키마 자체를 강제하는
-기능은 아니라서, 시스템 프롬프트에 원하는 필드를 명시하고 ollama_llm.py와 동일하게
-코드 레벨 방어(파싱 실패·필드 누락 시 보정)를 그대로 둔다.
-
-비용(cost_usd)은 OpenAI 응답의 `usage.total_tokens`(실측) × 가상 단가다 — 실제 청구
-금액과는 별개로, W10a의 모델 분리 효과를 fake/ollama와 같은 잣대로 비교하기 위함이다.
-(OpenAI는 입력/출력 토큰 단가가 실제로는 다르지만, 세 백엔드의 인터페이스를
-`usd_per_1k_tokens` 하나로 통일해두기 위해 여기서도 단일 블렌디드 단가로 단순화한다.)
-
-사전 조건: 유효한 `OPENAI_API_KEY` 환경변수(.env).
-"""
+OPENAI_API_KEY가 필요하며 API 비용이 발생한다. JSON 모드 응답의 스키마는 코드에서 검사한다.
+cost_usd는 total_tokens에 비교용 단가를 적용한 추정치이며 실제 청구액과 다르다."""
 import asyncio
 import os
 import json
@@ -82,7 +66,7 @@ class OpenAILLM:
 
 
 class OpenAIFastLLM(OpenAILLM):
-    """분류·계획·단순 대화 전담 (저비용 모델, 기본 gpt-4o-mini)."""
+    """분류·계획·대화에 사용하는 모델."""
 
     @traceable(run_type="llm", name="openai_fast.route")
     def route(self, query: str) -> tuple[dict, dict]:
@@ -97,9 +81,7 @@ class OpenAIFastLLM(OpenAILLM):
 
     @traceable(run_type="llm", name="openai_fast.chat")
     async def chat(self, query: str, history: list[dict], on_token=None) -> tuple[str, dict]:
-        """ollama_llm.py와 인터페이스(on_token 콜백)만 맞춘다 — OpenAI Chat Completions를
-        아직 stream=True로 호출하지 않아 토큰 단위 중계는 하지 않고 완성된 응답을 한 번에
-        전달한다."""
+        """완성된 응답을 on_token 콜백으로 한 번에 전달한다. 토큰별 스트리밍은 사용하지 않는다."""
         system = ("당신은 간결한 한국어 비서다. 한두 문장으로 답하라. "
                   "대화 이력에서 사용자가 밝힌 이름이 있으면 정확히 기억해 답하라.")
         rendered = "\n".join(f"{m['role']}: {m['content']}" for m in history[-10:])
@@ -113,7 +95,7 @@ class OpenAIFastLLM(OpenAILLM):
 
 
 class OpenAIQualityLLM(OpenAILLM):
-    """분석·최종 답변 작성 전담 (고품질 모델, 기본 gpt-4o)."""
+    """분석과 답변 작성에 사용하는 모델."""
 
     @traceable(run_type="llm", name="openai_quality.analyze")
     def analyze(self, collected: list[dict]) -> tuple[str, dict]:

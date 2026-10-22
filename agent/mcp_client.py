@@ -1,16 +1,6 @@
-"""Wave 2 — MCP 서버 여러 개를 subprocess(stdio)로 1회씩 기동해 재사용하는 클라이언트.
+"""서버 수명 동안 stdio MCP 연결을 공유한다. 리소스와 프롬프트는 연결된 서버에서 탐색한다.
 
-Wave 1의 교훈대로 서버(lifespan)에서 한 번만 연결을 만들고 모든 요청이 공유한다.
-Wave 9 데모용으로, 프로세스 최초의 get_monitoring_status 호출 1회는 일부러
-asyncio.TimeoutError를 던진다(transient) — with_retry가 backoff 후 복구해야 한다.
-
-연결 대상은 "ops"(mcp_server.py — monitoring tool + runbook resource + prompt, 실제
-사용)와 "docs"(mcp_server_docs.py — API 문서 resource만 제공, agent는 사용하지 않는
-decoy) 두 서버다. resource/prompt를 요청할 때는 어느 서버가 그걸 들고 있는지 미리
-알고 있지 않다고 가정하고, find_resource_template()/find_prompt()로 연결된 서버들을
-순서대로 조회(list)해 이름이 맞는 걸 찾은 뒤에야 그 서버로 read_resource/get_prompt를
-보낸다.
-"""
+기본 설정에서는 첫 모니터링 호출에 시간 초과를 주입해 재시도를 확인한다."""
 import asyncio
 import json
 import os
@@ -30,11 +20,7 @@ DEFAULT_SERVER_SCRIPTS = {
 
 
 def _attr(obj, *names):
-    """mcp SDK 버전에 따라 pydantic 필드명이 camelCase(예: resourceTemplates,
-    uriTemplate, 구버전 1.x)와 snake_case(예: resource_templates, uri_template,
-    신버전 2.x)로 갈린다 — 이 프로젝트 안에도 시스템 python3(mcp 1.28.1, camelCase)와
-    .venv(mcp 2.2.0, snake_case)가 섞여 있어 실행 환경마다 바뀐다. 둘 다 시도해서
-    설치된 버전과 무관하게 동작하게 한다."""
+    """MCP SDK의 camelCase·snake_case 필드명을 모두 지원한다."""
     for name in names:
         if hasattr(obj, name):
             return getattr(obj, name)
@@ -48,7 +34,7 @@ class MCPClient:
         self._stack: AsyncExitStack | None = None
         self.sessions: dict[str, ClientSession] = {}
         # SDK가 요청 ID별 응답을 연결하므로 응답 대기 전체를 잠그지 않는다.
-        self._flaky_pending = flaky_first_tool_call   # Wave 9 시뮬레이션
+        self._flaky_pending = flaky_first_tool_call   # 재시도 확인용 장애 주입
 
     async def start(self) -> None:
         self._stack = AsyncExitStack()
@@ -71,7 +57,7 @@ class MCPClient:
     async def call_tool(self, name: str, arguments: dict, server: str = "ops") -> dict:
         if self._flaky_pending and name == "get_monitoring_status":
             self._flaky_pending = False
-            raise asyncio.TimeoutError("simulated transient timeout (Wave 9 demo)")
+            raise asyncio.TimeoutError("simulated transient timeout")
         result = await self.sessions[server].call_tool(name, arguments)
         if getattr(result, "isError", False) or getattr(result, "is_error", False):
             raise RuntimeError("MCP tool reported a failure")

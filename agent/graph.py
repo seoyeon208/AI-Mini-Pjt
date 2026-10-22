@@ -1,13 +1,4 @@
-"""v2 Supervisor — 실제 langgraph.StateGraph (Wave 4·5·6·7·8·10b·15 통합).
-
-route → (chat 직행 | lookup: gate → research → 원문 구성·대조 | incident 파이프라인)
-incident: plan(MCP Prompt 절차 반영) → gate(권위 게이트) → research(가드+병렬+재시도)
-          → replan_check(부족 시 gap task 후 재조사) → analysis(needs_analysis=True일 때만
-          실제 실행) → write → validate(반려 시 재작성) → finalize
-
-모든 노드는 SupervisorDeps를 functools.partial로 주입받는 순수 함수다(Wave 13).
-각 노드는 @traceable로 LangSmith에 계층 트리로 기록된다.
-"""
+"""요청 분류, 조사, 답변 검증을 연결하는 LangGraph 그래프. 단순 조회는 원문으로 답변한다."""
 import asyncio
 import time
 from functools import partial
@@ -69,7 +60,7 @@ def _cost(state: AgentState, usage: dict) -> float:
 
 @traceable(name="route_node")
 async def route_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 5 — 모든 쿼리가 무거운 파이프라인을 탈 필요는 없다."""
+    """요청 유형과 조사 대상을 확인한다."""
     result, usage = await asyncio.to_thread(deps.fast_llm.route, state["query"])
     route = result["route"]
     systems, unknown = mentioned_systems(state["query"])
@@ -107,11 +98,7 @@ async def route_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="chat_answer_node")
 async def chat_answer_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 5 direct 경로 — 히스토리 기반 응답 (Wave 12 세션 증명 지점).
-
-    토큰 단위 스트리밍 — get_stream_writer()는 /chat/stream처럼 custom 모드로 소비될
-    때만 실제로 전송되고, /chat(ainvoke)처럼 스트리밍하지 않는 호출에서는 자동으로
-    no-op이 된다."""
+    """대화 이력을 전달하고 응답 토큰을 custom 스트림으로 보낸다."""
     writer = get_stream_writer()
     reply, usage = await deps.fast_llm.chat(
         state["query"], state.get("history", []),
@@ -123,10 +110,7 @@ async def chat_answer_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="plan_node")
 async def plan_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 4 — Plan/Task 분해. Wave 2의 MCP Prompt가 표준 절차를 깔아준다.
-
-    resource와 마찬가지로 이름을 어느 서버가 들고 있는지 미리 가정하지 않고,
-    find_prompt()로 연결된 서버들을 먼저 조회해 찾은 뒤에만 get_prompt를 보낸다."""
+    """MCP에서 진단 절차를 찾은 뒤 모델에 조사 계획을 요청한다."""
     prompt_server = await deps.mcp.find_prompt("incident_analysis_prompt")
     procedure = await deps.mcp.get_prompt(
         "incident_analysis_prompt",
@@ -144,7 +128,7 @@ async def plan_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="gate_node")
 async def gate_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 6 — 조사 범위·작업 종류·중복·분석 필요 여부를 코드로 강제한다."""
+    """조사 범위, 작업 종류, 중복과 분석 필요 여부를 검사한다."""
     manual_lookup = state["route"] == "lookup" and not state["requested_systems"]
     tasks, rejected, added_targets = validate_tasks(
         [] if manual_lookup else state["tasks"], state["requested_systems"],
@@ -285,9 +269,7 @@ async def replan_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="analysis_node")
 async def analysis_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 6 보완 — needs_analysis=True가 정당한 경우(모델의 자기모순이 아니라
-    실제로 패턴 비교가 필요하다고 판단한 경우)를 위한 실행 경로. gate가 살려둔
-    agent=='analysis' task가 있을 때만 수집된 monitoring 결과들을 비교 분석한다."""
+    """검증된 계획에 analysis 작업이 있을 때 수집 결과를 분석한다."""
     tasks = state["tasks"]
     pending = [t for t in tasks if t["agent"] == "analysis" and t["status"] == "pending"]
     if not pending:
@@ -401,7 +383,7 @@ def _after_validate(state: AgentState) -> str:
 
 def build_graph(deps: SupervisorDeps):
     g = StateGraph(AgentState)
-    node = lambda fn: partial(fn, deps=deps)   # Wave 13 — 명시적 의존성 주입
+    node = lambda fn: partial(fn, deps=deps)
     g.add_node("route", node(route_node))
     g.add_node("chat_answer", node(chat_answer_node))
     g.add_node("plan", node(plan_node))

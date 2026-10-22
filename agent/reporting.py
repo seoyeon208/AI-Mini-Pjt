@@ -1,4 +1,4 @@
-"""구조화된 관측값·출처 검사와 답변 품질 평가의 공통 계약."""
+"""답변 스키마, 원문 대조, 문장별 근거 검증과 최종 출력."""
 import json
 import re
 from decimal import Decimal

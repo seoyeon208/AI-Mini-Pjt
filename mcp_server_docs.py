@@ -1,11 +1,4 @@
-"""all_total 통합 실습 — 두 번째(미사용) MCP 서버.
-
-agent는 이 서버의 어떤 capability도 직접 호출하지 않는다. 여러 MCP 서버가 동시에
-연결돼 있을 때, agent가 필요한 resource를 찾기 위해 "어느 서버가 그 resource를
-제공하는지" 먼저 조회(list_resource_templates)하고서야 요청해야 하는 상황을
-시뮬레이션하기 위한 decoy 서버다 — mcp_server.py(runbook)와 이름이 겹치지 않는
-내부 API 문서 resource만 제공한다.
-"""
+"""다중 서버 탐색을 확인하기 위한 문서 MCP 서버. 운영 진단에서는 이 서버의 문서를 사용하지 않는다."""
 from pathlib import Path
 
 from fastmcp import FastMCP

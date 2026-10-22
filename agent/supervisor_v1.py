@@ -1,9 +1,4 @@
-"""Wave 14 — v1 (legacy) supervisor.
-
-라우팅도, 게이트도, 재계획도, 검증도 없는 초기 선형 버전. SUPERVISOR_VERSION=v1로
-기동하면 이 구현이 실행된다 — 문제가 생기면 환경변수 하나로 v2에서 즉시 롤백해
-돌아오는 지점이다.
-"""
+"""SUPERVISOR_VERSION=v1에서 사용하는 초기 선형 파이프라인. 요청 분류와 답변 검증은 제공하지 않는다."""
 from langsmith import traceable
 
 from .deps import SupervisorDeps

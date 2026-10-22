@@ -1,13 +1,4 @@
-"""all_total 통합 실습 — FastAPI 백엔드 (Wave 1·3·12·14 축 + 전체 조립).
-
-- Wave 1  : lifespan에서 Agent 번들(MCP 연결·LLM·그래프)을 프로세스당 정확히 1회 생성,
-            app.state로 모든 요청이 공유 (creation_count/instance_id로 증명)
-- Wave 2  : mcp_server.py를 subprocess(stdio)로 기동해 연결 유지
-- Wave 3  : GET /chat/stream — 그래프 실행 과정을 SSE 이벤트로 스트리밍
-- Wave 12 : 대화 이력을 SQLite(session.db)에 저장 — 재시작해도 유지
-- Wave 14 : SUPERVISOR_VERSION(v1/v2) 환경변수로 legacy/신형 파이프라인 즉시 전환
-- LangSmith: 요청당 chat_request 루트 run 아래로 노드·LLM·MCP 호출이 계층 기록됨
-"""
+"""Ops Desk의 HTTP API와 SSE 응답. 서버 수명 동안 모델·MCP 연결·세션 저장소를 공유한다."""
 import json
 import logging
 import os
@@ -32,10 +23,10 @@ from agent.mcp_client import MCPClient
 from agent.session_store import SqliteSessionStore
 from agent.supervisor_v1 import run_v1
 
-CREATION_COUNT = 0   # Wave 1 — 프로세스 내 Agent 번들 생성 횟수 (항상 1이어야 정상)
+CREATION_COUNT = 0   # 프로세스 내 의존성 생성 횟수
 
 
-class ChatRequest(BaseModel):   # Wave 1 — Pydantic 요청 검증
+class ChatRequest(BaseModel):
     message: str
     thread_id: str = "default"
 
@@ -67,7 +58,7 @@ async def lifespan(app: FastAPI):
     global CREATION_COUNT
     CREATION_COUNT += 1
     mcp = MCPClient()
-    await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
+    await mcp.start()
     backend, fast_llm, quality_llm = _build_llms()
     app.state.llm_backend = backend
     deps = SupervisorDeps(
@@ -84,7 +75,7 @@ async def lifespan(app: FastAPI):
     yield
     await mcp.stop()
     deps.session_store.close()
-    try:   # 종료 전 LangSmith 배치 전송 플러시 — kill 시 run이 pending으로 남는 것 방지
+    try:   # 종료 전에 대기 중인 추적 기록을 전송한다.
         from langchain_core.tracers.langchain import wait_for_all_tracers
         wait_for_all_tracers()
     except Exception:
@@ -141,13 +132,13 @@ def _metadata(result: dict, run_id: str | None) -> dict:
 @traceable(name="chat_request")
 async def _handle_chat(message: str, thread_id: str) -> tuple[dict, str | None]:
     deps = app.state.deps
-    history = deps.session_store.load(thread_id)   # Wave 12
+    history = deps.session_store.load(thread_id)
     if deps.version == "v2":
         result = await app.state.graph.ainvoke(
             {"query": message, "thread_id": thread_id, "history": history,
              "events": [], "cost_usd": 0.0})
     else:
-        result = await run_v1(deps, message, thread_id, history)   # Wave 14
+        result = await run_v1(deps, message, thread_id, history)
     deps.session_store.append(thread_id, "user", message)
     deps.session_store.append(thread_id, "assistant", result["final"])
     rt = get_current_run_tree()
@@ -177,11 +168,7 @@ def _request_failure(exc: Exception) -> tuple[int, dict]:
 
 @app.get("/chat/stream")
 async def chat_stream(message: str, thread_id: str = "default"):
-    """Wave 3 — 그래프의 노드별 진행 상황을 SSE로 스트리밍.
-
-    이벤트마다 'data: {json}\\n\\n' 형태로 내려보내고 마지막에 data: [DONE] 센티널을
-    보낸다 — 프론트엔드는 \\n\\n 경계로 이벤트를 분리해 파싱해야 한다(Wave 3b).
-    """
+    """진행 이벤트와 최종 답변을 SSE로 전송하고 [DONE]으로 종료한다."""
     deps = app.state.deps
 
     async def gen():
@@ -195,10 +182,8 @@ async def chat_stream(message: str, thread_id: str = "default"):
             seen = 0
             result = {}
             final = ""
-            last_prompt = None   # finalize까지 살아남은 최종 write/chat 호출의 실제 프롬프트
-            # stream_mode를 리스트로 주면 (mode, payload) 튜플이 나온다 — "updates"는
-            # 노드가 끝날 때마다의 상태 델타, "custom"은 chat_answer_node의 대화 토큰과
-            # finalize_node가 검증 후 내보내는 답변(AnswerToken) 이벤트다.
+            last_prompt = None   # 최종 답변을 생성한 프롬프트
+            # updates는 노드 상태 변경, custom은 답변 전송 이벤트다.
             async for mode, payload in app.state.graph.astream(
                     {"query": message, "thread_id": thread_id, "history": history,
                      "events": [], "cost_usd": 0.0}, stream_mode=["updates", "custom"]):

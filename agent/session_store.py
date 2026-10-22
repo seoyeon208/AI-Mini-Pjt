@@ -1,8 +1,4 @@
-"""Wave 12 — 프로세스 밖(SQLite 파일)에 두는 세션 저장소.
-
-서버가 재시작돼도(새 프로세스, 새 인스턴스) 같은 session.db 파일을 다시 열므로
-대화 이력이 유지된다. in-memory dict였다면 재시작 즉시 소실됐을 상태다.
-"""
+"""SQLite 파일에 대화 이력을 저장한다. 같은 DB를 사용하면 서버 재시작 후에도 이력이 유지된다."""
 import sqlite3
 from datetime import datetime
 from pathlib import Path

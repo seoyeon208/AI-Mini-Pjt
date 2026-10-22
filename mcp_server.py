@@ -1,14 +1,4 @@
-"""all_total 통합 실습 — MCP Server (Wave 2 축).
-
-Tool / Resource / Prompt 3대 capability를 모두 노출하는 실제 fastmcp 서버.
-FastAPI 백엔드(server.py)가 lifespan에서 이 파일을 subprocess(stdio)로 1회 기동해
-프로세스가 살아 있는 동안 재사용한다 (Wave 1 싱글턴 + Wave 2 표준화의 결합).
-
-- Tool    get_monitoring_status : 호출마다 값이 달라지는 동적 조회 → Tool이 맞다
-- Tool    search_runbooks : 질문·증상으로 관련 매뉴얼 검색
-- Resource runbook://incident-response/{incident_type} : URI로 식별되는 정적 문서
-- Prompt  incident_analysis_prompt : 여러 Tool을 조합하는 표준 진단 절차를 강제
-"""
+"""예시 모니터링 조회, 매뉴얼 검색·원문, 진단 절차를 제공하는 MCP 서버."""
 import json
 import random
 import re

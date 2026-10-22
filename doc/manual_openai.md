@@ -12,5 +12,4 @@ bash sh/run_agent_openai.sh
 
 다른 터미널에서 `bash sh/run_frontend.sh`를 실행하고 http://127.0.0.1:8600 에 접속합니다.
 화면 사용과 질문 예시는 [사용 가이드](manual_ollma.md#질문-예시)를 참고합니다.
-이전 버전의 점수 평가 화면은 현재 검증 방식과 달라 제외했습니다.
 현재 저장된 Ollama 평가 결과를 OpenAI 모델의 검증 결과로 해석하지 않습니다.

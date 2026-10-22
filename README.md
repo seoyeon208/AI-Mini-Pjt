@@ -1,6 +1,6 @@
 # Ops Desk
 
-서비스 상태와 대응 매뉴얼을 조회하고, 근거와 확인할 사항을 함께 보여주는 운영 진단 도우미입니다.
+서비스 상태와 대응 매뉴얼을 조회하는 운영 진단 도우미입니다. 답변에 출처와 미확인 사항을 표시합니다.
 수업 제공 프로젝트를 바탕으로 요청 분류, BM25 검색, 답변 검증과 사용자 화면을 확장했습니다.
 모니터링 데이터와 매뉴얼은 실습용 예시이며 실제 운영 시스템에 연결되어 있지 않습니다.
 
@@ -72,7 +72,7 @@ Enter로 전송하고 Shift+Enter로 줄바꿈합니다. 조회·진단 대상�
 LANGCHAIN_TRACING_V2=false LANGSMITH_TRACING=false .venv/bin/python3 -m unittest discover -s tests -q
 ```
 
-`evaluation/`의 고정 질문과 기존 결과는 개선 근거를 재검토할 수 있도록 유지했습니다.
+`evaluation/`의 고정 질문과 기존 결과는 이전 실행을 비교할 수 있도록 보관합니다.
 새 평가 결과는 Git에서 제외되는 `evaluation/runs/`에 저장합니다.
 결과에는 질문·답변·근거 원문이 포함될 수 있으므로 공개 전에 내용을 확인해야 합니다.
 
@@ -86,7 +86,7 @@ LANGCHAIN_TRACING_V2=false LANGSMITH_TRACING=false .venv/bin/python3 -m unittest
 ## 파일 구성
 
 ```text
-agent/                 요청 분류·계획·조사·보고서·검증·세션
+agent/                요청 분류·계획·조사·보고서·검증·세션
 data/                 예시 모니터링과 매뉴얼
 tests/                회귀 테스트와 MCP fixture
 evaluation/           평가 코드·고정 사례·기존 결과

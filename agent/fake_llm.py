@@ -1,9 +1,4 @@
-"""Wave 4/10a — 결정론적 Fake LLM 2종 (fast/quality) + 실측 비용 계산.
-
-실제 LLM 호출 없이도 파이프라인 전체가 결정론적으로 재현되도록, 프롬프트 내용에 따라
-정해진 응답을 돌려준다. 각 호출은 LangSmith에 run_type="llm"으로 기록되고, 문자열
-길이 기반 토큰 추정치로 비용을 계산해 상태에 누적한다 (Wave 10a의 모델 분리 근거).
-"""
+"""외부 API 없이 요청 흐름을 확인하는 규칙 기반 모델. 토큰 수와 비용은 문자열 길이로 추정한다."""
 import re
 
 from langsmith import traceable
@@ -47,7 +42,7 @@ class FakeLLM:
 
 
 class FastLLM(FakeLLM):
-    """분류·계획 등 짧고 정형적인 단계 전담 (저비용)."""
+    """분류·계획·대화의 규칙 기반 응답."""
 
     @traceable(run_type="llm", name="fast_llm.route")
     def route(self, query: str) -> tuple[dict, dict]:
@@ -85,10 +80,7 @@ class FastLLM(FakeLLM):
 
     @traceable(run_type="llm", name="fast_llm.chat")
     async def chat(self, query: str, history: list[dict], on_token=None) -> tuple[str, dict]:
-        """Wave 5의 direct 경로 + Wave 12 증명용 — 히스토리에서 이름을 기억해낸다.
-
-        fake 백엔드는 실제 네트워크 호출이 없어 토큰 단위로 쪼갤 대상이 없다 —
-        ollama_llm.py와 인터페이스(on_token 콜백)만 맞추고 결과를 한 번에 반환한다."""
+        """대화 이력에서 이름을 찾아 응답한다. 결과는 on_token 콜백으로 한 번에 전달한다."""
         for msg in reversed(history):
             m = re.search(r"제 이름은 (\S+?)입니다", msg.get("content", ""))
             if m and re.search(r"이름이 뭐", query):
@@ -107,11 +99,11 @@ class FastLLM(FakeLLM):
 
 
 class QualityLLM(FakeLLM):
-    """분석·최종 답변 작성 전담 (고품질·고비용)."""
+    """분석·답변 작성의 규칙 기반 응답."""
 
     @traceable(run_type="llm", name="quality_llm.analyze")
     def analyze(self, collected: list[dict]) -> tuple[str, dict]:
-        """Wave 6 보완 — 여러 시스템의 monitoring 결과 사이에 공통 패턴이 있는지 비교."""
+        """여러 서비스의 모니터링 결과에서 공통 패턴을 찾는다."""
         mon = [c["data"] for c in collected if c["source"] == "monitoring"]
         degraded = [d["system_name"] for d in mon if d.get("status") != "healthy"]
         if len(degraded) >= 2:

@@ -1,14 +1,7 @@
-"""LLM_BACKEND=ollama — 로컬 Ollama 실모델 백엔드 (fake_llm과 동일 인터페이스).
+"""Ollama 모델 호출과 구조화 응답 파싱.
 
-Wave 10a 구도를 실물로: fast(기본 qwen3.5:2b)는 분류·계획·단순 대화, quality(기본
-qwen3:8b)는 분석·최종 답변 작성 전담. Ollama의 구조화 출력(format=<JSON Schema>)과
-temperature=0으로 변동을 줄이지만 실모델이므로 결정론은 아니다 — 그래서 gate(W6)·
-replan(W7)·validator(W8)가 연출이 아니라 실제 방어선으로 동작한다.
-비용(cost_usd)은 '가상 단가 × 실측 토큰 수(prompt_eval_count+eval_count)'다 — 로컬
-추론이라 실제 과금은 0이지만, W10a의 모델 분리 효과를 같은 잣대로 비교하기 위함이다.
-
-사전 조건: `ollama serve` 실행 중 + 두 모델을 각각 `ollama pull`로 준비.
-"""
+기본 모델은 fast=qwen3.5:2b, quality=qwen3:8b다. 서버 실행과 모델 설치가 필요하다.
+cost_usd는 실측 토큰 수에 비교용 단가를 적용한 추정치이며 실제 비용이 아니다."""
 import asyncio
 import json
 
@@ -106,7 +99,7 @@ class OllamaLLM:
 
 
 class OllamaFastLLM(OllamaLLM):
-    """분류·계획·단순 대화 전담 (저사양 소형 모델)."""
+    """분류·계획·대화에 사용하는 모델."""
 
     @traceable(run_type="llm", name="ollama_fast.route")
     def route(self, query: str) -> tuple[dict, dict]:
@@ -130,7 +123,7 @@ class OllamaFastLLM(OllamaLLM):
 
 
 class OllamaQualityLLM(OllamaLLM):
-    """분석·최종 답변 작성 전담 (상대적으로 큰 모델)."""
+    """분석과 답변 작성에 사용하는 모델."""
 
     @traceable(run_type="llm", name="ollama_quality.analyze")
     def analyze(self, collected: list[dict]) -> tuple[str, dict]:

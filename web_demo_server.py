@@ -1,17 +1,4 @@
-"""web_demo_server.py — all_total_vue 에이전트와 브라우저 채팅창으로 대화해보는 데모.
-
-web_chat.html이 바닐라 JS 대신 Vue 3(CDN 글로벌 빌드, 별도 빌드 단계 없음)로 되어
-있다는 점만 all_total과 다르다. server.py(8100, 기존 통합 테스트 서버)는 전혀
-건드리지 않는다. 이 스크립트는
-- web_chat.html 한 장을 같은 출처(origin)로 띄우고
-- /chat/stream 요청을 그대로 8100으로 중계(프록시)해서
-
-브라우저의 CORS 제약 없이 실제 에이전트와 대화할 수 있게 해주는 아주 얇은 레이어다.
-server.py는 평소처럼(fake/ollama/openai 아무 백엔드로나) 8100에 미리 띄워 놓아야 한다.
-
-실행:
-    python3 web_demo_server.py        # http://localhost:8600 에서 채팅 화면 오픈
-"""
+"""Vue 채팅 화면을 제공하고 백엔드 API를 중계한다. 백엔드는 8100, 웹 화면은 8600 포트를 사용한다."""
 from pathlib import Path
 
 import httpx
