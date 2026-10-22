@@ -1,0 +1,96 @@
+[
+  {
+    "id": "incident-1",
+    "group": "incident",
+    "query": "auth-service의 응답 지연 원인과 대응 방안을 분석해줘",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "auth-service"
+    ],
+    "manuals": [
+      "high-latency"
+    ]
+  },
+  {
+    "id": "incident-2",
+    "group": "incident",
+    "query": "payments-service와 gateway-service의 CPU 급증·타임아웃 관련성을 분석해줘",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "payments-service",
+      "gateway-service"
+    ],
+    "manuals": [
+      "cpu-spike",
+      "high-latency",
+      "network-timeout"
+    ]
+  },
+  {
+    "id": "incident-3",
+    "group": "incident",
+    "query": "cache-service와 log-service의 메모리 증가·디스크 부족 현상을 비교 분석해줘",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "cache-service",
+      "log-service"
+    ],
+    "manuals": [
+      "memory-leak",
+      "disk-full"
+    ]
+  },
+  {
+    "id": "incident-1-paraphrase",
+    "group": "incident",
+    "query": "auth-service가 느리다고 해. 현재 자료에서 의심할 원인과 확인할 것, 대응 순서를 설명해줘.",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "auth-service"
+    ],
+    "manuals": [
+      "high-latency"
+    ]
+  },
+  {
+    "id": "incident-2-paraphrase",
+    "group": "incident",
+    "query": "payments-service의 높은 CPU와 gateway-service 타임아웃이 같은 원인인지 조사해줘. 확실한 사실과 추정을 구분해줘.",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "payments-service",
+      "gateway-service"
+    ],
+    "manuals": [
+      "cpu-spike",
+      "high-latency",
+      "network-timeout"
+    ]
+  },
+  {
+    "id": "incident-3-paraphrase",
+    "group": "incident",
+    "query": "cache-service는 메모리가 늘고 log-service는 저장 공간이 부족해. 각각 어떤 문제를 의심하고 무엇부터 해야 할까?",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "cache-service",
+      "log-service"
+    ],
+    "manuals": [
+      "memory-leak",
+      "disk-full"
+    ]
+  }
+]

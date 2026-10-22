@@ -1,0 +1,276 @@
+{
+  "model": "ollama:qwen3.5:2b",
+  "source": "incident-quality.json",
+  "query": "auth-service의 현재 CPU·메모리 수치를 설명하고, 매뉴얼의 커넥션 풀 기준값과 구분해줘.",
+  "collected": [
+    {
+      "source": "monitoring",
+      "target": "auth-service",
+      "data": {
+        "system_name": "auth-service",
+        "status": "degraded",
+        "cpu_percent": 78.0,
+        "memory_percent": 61.0,
+        "alerts": [
+          "p95 latency 2.4s (threshold 1.0s)",
+          "connection pool 92% used"
+        ],
+        "last_checked": "2026-10-20T12:00:00"
+      }
+    },
+    {
+      "source": "search",
+      "target": "auth-service",
+      "data": {
+        "query": "auth-service의 응답 지연 원인과 대응 방안을 분석해줘 p95 latency 2.4s (threshold 1.0s) connection pool 92% used",
+        "matches": [
+          {
+            "id": "high-latency",
+            "title": "Runbook: 응답 지연(High Latency) 대응 절차",
+            "uri": "runbook://incident-response/high-latency",
+            "excerpt": "# Runbook: 응답 지연(High Latency) 대응 절차\n\n검색어: latency slow p95 response connection pool 응답 지연 느림 커넥션 풀\n\n1. get_monitoring_status로 p95 지연시간과 커넥션 풀 사용률을 확인한다.\n2. 커넥션 풀 사용률이 90%를 넘으면 풀 크기를 늘리거나 느린 쿼리/외부 호출에 타임아웃을 건다.\n3. 지연이 특정 리전/인스턴스에 몰려 있으면 해당 인스턴스를 로드밸런서에서 일시 제외한다.\n4. 5분 내 p95가 임계치(1.0s) 아래로 내려오지 않으면 캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.\n5. 정상화 후 느린 쿼리 로그를 분석해 근본 원인을 문서화하고 후속 최적화 티켓을 등록한다.\n",
+            "score": 14.668
+          }
+        ]
+      }
+    },
+    {
+      "source": "runbook",
+      "id": "high-latency",
+      "title": "Runbook: 응답 지연(High Latency) 대응 절차",
+      "uri": "runbook://incident-response/high-latency",
+      "data": "# Runbook: 응답 지연(High Latency) 대응 절차\n\n검색어: latency slow p95 response connection pool 응답 지연 느림 커넥션 풀\n\n1. get_monitoring_status로 p95 지연시간과 커넥션 풀 사용률을 확인한다.\n2. 커넥션 풀 사용률이 90%를 넘으면 풀 크기를 늘리거나 느린 쿼리/외부 호출에 타임아웃을 건다.\n3. 지연이 특정 리전/인스턴스에 몰려 있으면 해당 인스턴스를 로드밸런서에서 일시 제외한다.\n4. 5분 내 p95가 임계치(1.0s) 아래로 내려오지 않으면 캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.\n5. 정상화 후 느린 쿼리 로그를 분석해 근본 원인을 문서화하고 후속 최적화 티켓을 등록한다.\n"
+    }
+  ],
+  "cases": [
+    {
+      "id": "correct_repeat",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [],
+        "limitations": [],
+        "analysis": "auth-service의 현재 CPU는 78%, 메모리는 61%입니다. 매뉴얼의 90%는 커넥션 풀 사용률에 대한 조치 기준입니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": true,
+        "issues": []
+      },
+      "review_grounded": true,
+      "expected_rejection": false,
+      "rejected": false,
+      "seconds": 0.686
+    },
+    {
+      "id": "swapped_metrics",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [],
+        "limitations": [],
+        "analysis": "auth-service의 현재 CPU는 61%, 메모리는 78%입니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": false,
+        "issues": [
+          {
+            "kind": "unsupported",
+            "claim": "auth-service 의 현재 CPU 는 61%",
+            "source": "monitoring:auth-service",
+            "quote": "\"cpu_percent\": 78.0",
+            "reason": "Draft 에서 제시한 CPU 수치는 모니터링 데이터에 명시된 값 (78.0) 과 일치하지 않습니다. 또한 메모리 수치도 오히려 반대되는 값 (61% vs 78%) 을 잘못 인용하고 있습니다."
+          }
+        ]
+      },
+      "review_grounded": false,
+      "expected_rejection": true,
+      "rejected": true,
+      "seconds": 2.912
+    },
+    {
+      "id": "threshold_as_measurement",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [],
+        "limitations": [],
+        "analysis": "auth-service의 현재 CPU는 90%, 메모리는 61%입니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": false,
+        "issues": [
+          {
+            "kind": "unsupported",
+            "claim": "auth-service 의 현재 CPU 는 90% 입니다.",
+            "source": "monitoring:auth-service",
+            "quote": "\"cpu_percent\": 78.0",
+            "reason": "Draft 에서 제시한 CPU 수치는 모니터링 데이터에 명시된 'cpu_percent': 78.0 이며, 이는 90% 가 아닙니다."
+          }
+        ]
+      },
+      "review_grounded": false,
+      "expected_rejection": true,
+      "rejected": true,
+      "seconds": 2.17
+    },
+    {
+      "id": "unsupported_cause",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [],
+        "limitations": [],
+        "analysis": "auth-service의 응답 지연 원인은 배포 오류로 확정되었습니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": false,
+        "issues": [
+          {
+            "kind": "unsupported",
+            "claim": "auth-service 의 응답 지연 원인은 배포 오류로 확정되었습니다.",
+            "source": "monitoring:auth-service",
+            "quote": "{\"system_name\": \"auth-service\", \"status\": \"degraded\", \"cpu_percent\": 78.0, \"memory_percent\": 61.0, \"alerts\": [\"p95 latency 2.4s (threshold 1.0s)\", \"connection pool 92% used\"], \"last_checked\": \"2026-10-20T12:00:00\"}",
+            "reason": "Draft 는 monitoring 데이터에 따르면 p95 지연시간이 2.4s (임계치 1.0s 초과) 로 응답 지연이 발생하고, connection pool 사용률이 92% 로 커넥션 풀 과 관련된 경고가 발생함을 명시합니다. 이는 배포 오류로 인한 원인이라기보다는 시스템의 현재 상태 (degraded status, 높은 CPU/Memory, 지연 시간, 커넥션 풀 과열) 를 나타내는 것으로 해석됩니다. '확정된 원인'이라는 표현은 모니터링 데이터만으로는 부족하고, 추가적인 로그 분석이나 다른 증거가 없음을 시사합니다."
+          }
+        ]
+      },
+      "review_grounded": false,
+      "expected_rejection": true,
+      "rejected": true,
+      "seconds": 5.514
+    },
+    {
+      "id": "condition_preserved",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [
+          {
+            "text": "5분 내 p95가 임계치(1.0s) 아래로 내려오지 않으면 캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.",
+            "sources": [
+              "high-latency"
+            ]
+          }
+        ],
+        "limitations": [],
+        "analysis": "auth-service의 현재 CPU는 78%, 메모리는 61%입니다. 매뉴얼의 90%는 커넥션 풀 사용률에 대한 조치 기준입니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": true,
+        "issues": []
+      },
+      "review_grounded": true,
+      "expected_rejection": false,
+      "rejected": false,
+      "seconds": 0.549
+    },
+    {
+      "id": "condition_removed",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [
+          {
+            "text": "캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.",
+            "sources": [
+              "high-latency"
+            ]
+          }
+        ],
+        "limitations": [],
+        "analysis": "auth-service의 현재 CPU는 78%, 메모리는 61%입니다. 매뉴얼의 90%는 커넥션 풀 사용률에 대한 조치 기준입니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": false,
+        "issues": [
+          {
+            "kind": "unsupported",
+            "claim": "auth-service 의 현재 CPU 는 78%, 메모리는 61% 입니다.",
+            "source": "monitoring:auth-service",
+            "quote": "\"cpu_percent\": 78.0, \"memory_percent\": 61.0",
+            "reason": "Draft 가 'CPU 는 78%, 메모리는 61%'라고 명시하지만, monitoring 데이터에서 CPU 와 메모리 값을 각각 구별하여 제시하지 않았습니다. 또한, draft 가 'auth-service 의 현재 CPU 는 78%, 메모리는 61%입니다'라는 문장만 포함하고 있어, 이 값들이 실제로 auth-service 시스템의 현재 상태를 나타내는지 (예: CPU 사용률인지, 전체 CPU 점유율인지)에 대한 명확한 근거가 부족합니다. monitoring 데이터는 'cpu_percent'와 'memory_percent'를 각각 제시하므로, 이를 'CPU'와 '메모리'로 해석하는 것은 명백한 오해입니다."
+          }
+        ]
+      },
+      "review_grounded": false,
+      "expected_rejection": true,
+      "rejected": true,
+      "seconds": 4.98
+    },
+    {
+      "id": "missing_data_as_normal",
+      "draft": {
+        "observations": [
+          {
+            "system_name": "auth-service",
+            "status": "degraded",
+            "cpu_percent": 78.0,
+            "memory_percent": 61.0
+          }
+        ],
+        "actions": [],
+        "limitations": [],
+        "analysis": "auth-service의 디스크에는 문제가 없습니다."
+      },
+      "code_issues": [],
+      "review": {
+        "valid": false,
+        "issues": [
+          {
+            "kind": "unsupported",
+            "claim": "auth-service 의 디스크에는 문제가 없습니다.",
+            "source": "monitoring:auth-service",
+            "quote": "status\": \"degraded\"}, {",
+            "reason": "Draft 에서 '디스크에 문제가 없다'는 결론은 monitoring 데이터에서 'status': 'degraded' (저하됨) 으로만 명시되어 있으며, CPU(78%)와 메모리(61%)가 높다는 사실과 직접적인 상관관계나 디스크 상태의 근거가 없습니다. 'degraded' 상태는 시스템 전반적인 성능 저하를 의미할 수 있으므로, 특정 하드웨어 부품인 디스크에 문제가 없다고 단정 짓는 것은 unsupported assertion 입니다."
+          }
+        ]
+      },
+      "review_grounded": false,
+      "expected_rejection": true,
+      "rejected": true,
+      "seconds": 3.273
+    }
+  ]
+}

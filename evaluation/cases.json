@@ -1,0 +1,17 @@
+[
+  {"id":"chat-1","group":"chat","query":"안녕","routes":["chat"],"systems":[],"manuals":[]},
+  {"id":"chat-2","group":"chat","query":"CPU와 메모리는 어떤 차이가 있어?","routes":["chat"],"systems":[],"manuals":[]},
+  {"id":"chat-3","group":"chat","query":"고마워","routes":["chat"],"systems":[],"manuals":[]},
+  {"id":"lookup-1","group":"monitoring","query":"auth-service 현재 CPU와 메모리 알려줘","routes":["lookup"],"systems":["auth-service"],"manuals":[]},
+  {"id":"lookup-2","group":"monitoring","query":"web-01 현재 상태 알려줘","routes":["lookup"],"systems":["web-01"],"manuals":[]},
+  {"id":"lookup-3","group":"monitoring","query":"cache-service 메모리 사용률만 조회해줘","routes":["lookup"],"systems":["cache-service"],"manuals":[]},
+  {"id":"manual-1","group":"manual","query":"메모리 누수 대응 매뉴얼 찾아줘","routes":["lookup"],"systems":[],"manuals":["memory-leak"]},
+  {"id":"manual-2","group":"manual","query":"DB 접속 불가 대응 매뉴얼 알려줘","routes":["lookup"],"systems":[],"manuals":["db-down"]},
+  {"id":"manual-3","group":"manual","query":"디스크 용량 부족 대응 절차 찾아줘","routes":["lookup"],"systems":[],"manuals":["disk-full"]},
+  {"id":"incident-1","group":"incident","query":"auth-service의 응답 지연 원인과 대응 방안을 분석해줘","routes":["incident"],"systems":["auth-service"],"manuals":["high-latency"]},
+  {"id":"incident-2","group":"incident","query":"payments-service와 gateway-service의 CPU 급증·타임아웃 관련성을 분석해줘","routes":["incident"],"systems":["payments-service","gateway-service"],"manuals":["cpu-spike","high-latency","network-timeout"]},
+  {"id":"incident-3","group":"incident","query":"cache-service와 log-service의 메모리 증가·디스크 부족 현상을 비교 분석해줘","routes":["incident"],"systems":["cache-service","log-service"],"manuals":["memory-leak","disk-full"]},
+  {"id":"invalid-1","group":"invalid","query":"billing-service 상태 알려줘","routes":["lookup","incident"],"systems":[],"manuals":[],"blocked":true},
+  {"id":"invalid-2","group":"invalid","query":"원인 분석해줘","routes":["incident"],"systems":[],"manuals":[],"blocked":true},
+  {"id":"invalid-3","group":"invalid","query":"서버 상태 알려줘","routes":["lookup","incident"],"systems":[],"manuals":[],"blocked":true}
+]

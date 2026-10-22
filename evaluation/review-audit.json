@@ -1,0 +1,87 @@
+{
+  "sources": [
+    "review-final.json",
+    "review-unicode-check.json",
+    "review-semantics.json"
+  ],
+  "source_sha256": {
+    "runbook_search.py": "16ead39ddb290ac52ed0b6fa562e84b6ae583fc7f723b1e05cee1acf81bb9194",
+    "agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "agent/deps.py": "d8109b05ec4de0defa91c36031a2d6759e6b276e1f2076d194e48d0cb411ca50",
+    "agent/evidence.py": "d5a75bb3b5b571c0eca2286281d7d89a55228751bdcc41f6e3128901cbd38740",
+    "agent/fake_llm.py": "c1db5ff76e07a1bee3e52a2063b649f2e427b9132af5d91bd52bb20aa17bc932",
+    "agent/graph.py": "f6c7b7d8f857e00e05eb35c0b54ef731811cb76d301def0368b66ff4e3d8ed35",
+    "agent/mcp_client.py": "ec4346ded85592a094311aa3b53c2cafa127a28751e3a2f4da1951795ae6ef54",
+    "agent/ollama_llm.py": "0fa64fd13b3ab5ea72e8eb2be0df41be9b2cb4f0d5ccb4bf33dd94e282a6cae0",
+    "agent/openai_llm.py": "5f7322f9c0bfb31ffc5f6c37994db589bf60193c652b0ae06acdd498983bd276",
+    "agent/planning.py": "6c3189a672ae8a609ea271a0272d94ad04d51c2d58a0b3da776325b69c1cf7c9",
+    "agent/reporting.py": "55678a0f2df3388953fdadc704faf871c94af4ed18682e17111095373b9c0f26",
+    "agent/retry.py": "d2524552348c9faa08b5ce446434bf593677c7028fb38c9e11b03de8839d2a3a",
+    "agent/routing.py": "05de3f583b6968d5dc03a66b097d67943c60cd51c638e1014ac2a5f8e9e9eae1",
+    "agent/session_store.py": "cd1f61396ccd815d940be5a3d8929199648273c360c82fbd722163644b7356a6",
+    "agent/supervisor_v1.py": "6080b4b8c3a6bd56c617a560a64d644d5f1e5e2721ad65324a09886a2df6cab8"
+  },
+  "cases": [
+    {
+      "id": "incident-1",
+      "source": "review-final.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 2,
+      "hypotheses_without_numeric_restatement": 3,
+      "source_exact_actions": 3
+    },
+    {
+      "id": "incident-2",
+      "source": "review-final.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 4,
+      "hypotheses_without_numeric_restatement": 2,
+      "source_exact_actions": 2
+    },
+    {
+      "id": "incident-3",
+      "source": "review-final.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 4,
+      "hypotheses_without_numeric_restatement": 2,
+      "source_exact_actions": 2
+    },
+    {
+      "id": "incident-1-paraphrase",
+      "source": "review-final.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 2,
+      "hypotheses_without_numeric_restatement": 3,
+      "source_exact_actions": 5
+    },
+    {
+      "id": "incident-2-paraphrase",
+      "source": "review-final.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 4,
+      "hypotheses_without_numeric_restatement": 3,
+      "source_exact_actions": 2
+    },
+    {
+      "id": "incident-3-paraphrase",
+      "source": "review-unicode-check.json",
+      "status": "passed",
+      "fact_issues": [],
+      "review_references_valid": true,
+      "alerts_preserved": 4,
+      "hypotheses_without_numeric_restatement": 2,
+      "source_exact_actions": 2
+    }
+  ],
+  "semantic_decisions_correct": 11
+}

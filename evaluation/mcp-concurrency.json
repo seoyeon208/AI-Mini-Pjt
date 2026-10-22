@@ -1,0 +1,506 @@
+{
+  "date": "2026-10-21",
+  "method": "Real stdio MCP subprocess with controlled async delays of 0.20, 0.06 and 0.12 seconds. Each mode repeated 3 times; process startup excluded, first call not prewarmed. No LLM or production monitoring latency measured. After measurement ran alongside the test suite.",
+  "before": {
+    "label": "before",
+    "versions": {
+      "mcp": "2.3.0",
+      "fastmcp": "4.1.1"
+    },
+    "source_sha256": {
+      "agent/mcp_client.py": "ec4346ded85592a094311aa3b53c2cafa127a28751e3a2f4da1951795ae6ef54",
+      "agent/graph.py": "a445b0743e8c551ded03bc212dad20b2feae03a014c4852d1726a5c404ec1979",
+      "tests/fixtures/concurrent_mcp.py": "92ab44b56c90d6d5fcd43de537eaafb98d0d757eac73af0853dd693338b330a8"
+    },
+    "runs": [
+      {
+        "repeat": 1,
+        "mode": "sequential",
+        "elapsed_seconds": 0.526066,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202366.582109708,
+            "finished": 202366.783285208
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202366.821259,
+            "finished": 202366.882387
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202366.885338291,
+            "finished": 202367.006476666
+          }
+        ]
+      },
+      {
+        "repeat": 1,
+        "mode": "gather",
+        "elapsed_seconds": 0.397362,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.011958916,
+            "finished": 202367.213129208
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.217524208,
+            "finished": 202367.277976666
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.282049333,
+            "finished": 202367.403264916
+          }
+        ]
+      },
+      {
+        "repeat": 2,
+        "mode": "sequential",
+        "elapsed_seconds": 0.396798,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.408423125,
+            "finished": 202367.609608208
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.61410125,
+            "finished": 202367.675287916
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.6797725,
+            "finished": 202367.80049875
+          }
+        ]
+      },
+      {
+        "repeat": 2,
+        "mode": "gather",
+        "elapsed_seconds": 0.3966,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202367.805725583,
+            "finished": 202368.006879
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.010582833,
+            "finished": 202368.071751625
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.076056666,
+            "finished": 202368.197217
+          }
+        ]
+      },
+      {
+        "repeat": 3,
+        "mode": "sequential",
+        "elapsed_seconds": 0.396845,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.201903416,
+            "finished": 202368.402632416
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.407185791,
+            "finished": 202368.4683525
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.472887791,
+            "finished": 202368.594049041
+          }
+        ]
+      },
+      {
+        "repeat": 3,
+        "mode": "gather",
+        "elapsed_seconds": 0.395856,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.5989935,
+            "finished": 202368.80018425
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.804363333,
+            "finished": 202368.865478541
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202368.868975583,
+            "finished": 202368.990136875
+          }
+        ]
+      }
+    ]
+  },
+  "after": {
+    "label": "after",
+    "versions": {
+      "mcp": "2.3.0",
+      "fastmcp": "4.1.1"
+    },
+    "source_sha256": {
+      "agent/mcp_client.py": "7e27e27a6f23a1605bab1e55021c678fb28c12109e77b243ac784d484492e3c9",
+      "agent/graph.py": "a445b0743e8c551ded03bc212dad20b2feae03a014c4852d1726a5c404ec1979",
+      "tests/fixtures/concurrent_mcp.py": "92ab44b56c90d6d5fcd43de537eaafb98d0d757eac73af0853dd693338b330a8"
+    },
+    "runs": [
+      {
+        "repeat": 1,
+        "mode": "sequential",
+        "elapsed_seconds": 0.507877,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.46465975,
+            "finished": 202383.665711458
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.681472166,
+            "finished": 202383.742516083
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.74390175,
+            "finished": 202383.864945333
+          }
+        ]
+      },
+      {
+        "repeat": 1,
+        "mode": "gather",
+        "elapsed_seconds": 0.202936,
+        "all_overlap": true,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.866551875,
+            "finished": 202384.067614958
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.866786916,
+            "finished": 202383.927859916
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202383.867676166,
+            "finished": 202383.988756791
+          }
+        ]
+      },
+      {
+        "repeat": 2,
+        "mode": "sequential",
+        "elapsed_seconds": 0.387766,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.069755208,
+            "finished": 202384.270806041
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.272373583,
+            "finished": 202384.333407458
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.334564333,
+            "finished": 202384.455618291
+          }
+        ]
+      },
+      {
+        "repeat": 2,
+        "mode": "gather",
+        "elapsed_seconds": 0.202602,
+        "all_overlap": true,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.457251416,
+            "finished": 202384.6582915
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.457482833,
+            "finished": 202384.518527
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.457674125,
+            "finished": 202384.578715958
+          }
+        ]
+      },
+      {
+        "repeat": 3,
+        "mode": "sequential",
+        "elapsed_seconds": 0.387638,
+        "all_overlap": false,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.659570875,
+            "finished": 202384.86066275
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.861990625,
+            "finished": 202384.923056541
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202384.924423708,
+            "finished": 202385.045477291
+          }
+        ]
+      },
+      {
+        "repeat": 3,
+        "mode": "gather",
+        "elapsed_seconds": 0.203037,
+        "all_overlap": true,
+        "records": [
+          {
+            "system_name": "auth-service",
+            "status": "healthy",
+            "cpu_percent": 20,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202385.04794625,
+            "finished": 202385.248996833
+          },
+          {
+            "system_name": "payments-service",
+            "status": "healthy",
+            "cpu_percent": 30,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202385.048396958,
+            "finished": 202385.109481583
+          },
+          {
+            "system_name": "gateway-service",
+            "status": "healthy",
+            "cpu_percent": 40,
+            "memory_percent": 50,
+            "alerts": [],
+            "last_checked": "2026-10-21T00:00:00",
+            "started": 202385.048724416,
+            "finished": 202385.169765333
+          }
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "before_gather_median_seconds": 0.3966,
+    "after_gather_median_seconds": 0.202936,
+    "after_sequential_median_seconds": 0.387766,
+    "reduction_percent": 48.83,
+    "before_overlapping_runs": 0,
+    "after_overlapping_runs": 3
+  },
+  "tests": {
+    "count": 90,
+    "passed": true,
+    "seconds": 7.159
+  },
+  "limits": [
+    "Synthetic delays prove overlap, not production speedup.",
+    "Resource reads remain sequential after search; monitor and search tasks use separate concurrent phases.",
+    "Existing SDK compatibility deprecation warnings remain."
+  ]
+}

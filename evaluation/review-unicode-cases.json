@@ -1,0 +1,18 @@
+[
+  {
+    "id": "incident-3-paraphrase",
+    "group": "incident",
+    "query": "cache-service는 메모리가 늘고 log-service는 저장 공간이 부족해. 각각 어떤 문제를 의심하고 무엇부터 해야 할까?",
+    "routes": [
+      "incident"
+    ],
+    "systems": [
+      "cache-service",
+      "log-service"
+    ],
+    "manuals": [
+      "memory-leak",
+      "disk-full"
+    ]
+  }
+]

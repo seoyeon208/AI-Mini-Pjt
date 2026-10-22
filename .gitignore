@@ -1,0 +1,49 @@
+# Local credentials (only the blank example is public)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+
+# Python and tools
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Local conversations and execution output
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+logs/
+/evaluation/runs/
+/evaluation/new-*.json
+
+# Editor / OS / private artifacts
+.DS_Store
+._*
+Thumbs.db
+.idea/
+.vscode/
+.ppt-build/
+.repo-cleanup/
+output/
+*.zip
+*.bak
+*.tmp
